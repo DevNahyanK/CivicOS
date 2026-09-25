@@ -1,0 +1,8 @@
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
+import { notFound } from "next/navigation";
+import { ProblemForm } from "@/features/problems/problem-form";
+import { getOwnedProblem } from "@/features/problems/repository";
+import { problemIdSchema } from "@/lib/validation/problem";
+import { DeleteProblemButton } from "@/features/problems/delete-problem-button";
+export default async function EditProblemPage({ params }: { params: Promise<{ problemId: string }> }) { const { problemId } = await params; if (!problemIdSchema.safeParse(problemId).success) notFound(); const { problem, error } = await getOwnedProblem(problemId); if (!problem && !error) notFound(); if (error || !problem) throw new Error("Unable to load this problem."); return <div className="mx-auto max-w-3xl"><Link href={`/problems/${problemId}`} className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-900"><ChevronLeft size={16} /> Back to problem</Link><div className="mb-7 mt-6"><p className="text-sm font-medium text-[#123b5d]">Problem management</p><h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">Edit problem</h1><p className="mt-2 text-slate-600">Update the framing and current status of this problem.</p></div><ProblemForm problem={problem} /><div className="mt-6 rounded-xl border border-red-200 bg-white p-6"><h2 className="font-semibold text-slate-900">Delete this problem</h2><p className="mt-1 text-sm leading-6 text-slate-600">Deletion is reversible at the database level. This problem will be hidden from your workspace.</p><DeleteProblemButton problemId={problem.id} /></div></div>; }
