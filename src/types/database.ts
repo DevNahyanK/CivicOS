@@ -2,10 +2,10 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type ProblemStatus = "draft" | "in_analysis" | "ready_for_design" | "archived";
 export type Problem = { id: string; owner_id: string; title: string; description: string; status: ProblemStatus; location_context: Json | null; created_at: string; updated_at: string; deleted_at: string | null };
 type TableDefinition<Row, Insert, Update> = { Row: Row; Insert: Insert; Update: Update; Relationships: [] };
-type Profile = { id: string; display_name: string | null; avatar_url: string | null; created_at: string; updated_at: string };
-type ProblemInput = { id: string; problem_id: string; key: string; value_json: Json; unit: string | null; source_note: string | null; provenance: string; created_at: string };
-type ProblemAnalysis = { id: string; problem_id: string; ai_run_id: string | null; summary: string | null; structured_output: Json | null; review_status: string; created_at: string; updated_at: string };
-type AiRun = { id: string; problem_id: string | null; operation: string; model: string | null; prompt_version: string | null; request_json: Json | null; response_json: Json | null; status: string; input_tokens: number | null; output_tokens: number | null; created_at: string };
+export type Profile = { id: string; display_name: string | null; avatar_url: string | null; created_at: string; updated_at: string };
+export type ProblemInput = { id: string; problem_id: string; key: string; value_json: Json; unit: string | null; source_note: string | null; provenance: string; created_at: string };
+export type ProblemAnalysis = { id: string; problem_id: string; ai_run_id: string | null; summary: string | null; structured_output: Json | null; review_status: string; created_at: string; updated_at: string };
+export type AiRun = { id: string; problem_id: string | null; operation: string; model: string | null; prompt_version: string | null; request_json: Json | null; response_json: Json | null; status: string; input_tokens: number | null; output_tokens: number | null; created_at: string };
 export interface Database { public: { Tables: {
   profiles: TableDefinition<Profile, { id: string; display_name?: string | null; avatar_url?: string | null; created_at?: string; updated_at?: string }, { display_name?: string | null; avatar_url?: string | null; updated_at?: string }>;
   problems: TableDefinition<Problem, { id?: string; owner_id: string; title: string; description: string; status?: ProblemStatus; location_context?: Json | null; created_at?: string; updated_at?: string; deleted_at?: string | null }, { title?: string; description?: string; status?: ProblemStatus; location_context?: Json | null; updated_at?: string; deleted_at?: string | null }>;
