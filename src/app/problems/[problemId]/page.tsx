@@ -13,6 +13,7 @@ import { getProblemScenarios } from "@/features/scenarios/repository";
 import { SimulationWorkbench } from "@/features/simulation/simulation-workbench";
 import { getProblemSolutions } from "@/features/solutions/repository";
 import { SolutionDesigner } from "@/features/solutions/components/solution-designer";
+import { PrintablePolicyBrief } from "@/features/problems/components/printable-policy-brief";
 import { Briefcase } from "lucide-react";
 
 function locationLabel(
@@ -75,11 +76,20 @@ export default async function ProblemDetailPage({
                 {problem.title}
               </h1>
             </div>
-            <Button asChild variant="outline">
-              <Link href={`/problems/${problem.id}/edit`}>
-                <Pencil size={16} /> Edit problem
-              </Link>
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <PrintablePolicyBrief
+                problem={problem}
+                analysis={analysis}
+                scenarios={scenarios}
+                solutions={solutions}
+                location={location}
+              />
+              <Button asChild variant="outline">
+                <Link href={`/problems/${problem.id}/edit`}>
+                  <Pencil size={16} /> Edit problem
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <div className="mt-7 border-t border-slate-100 pt-7">
