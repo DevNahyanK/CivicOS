@@ -11,6 +11,9 @@ import { AnalyzeButton } from "@/features/analysis/analyze-button";
 import { isGeminiConfigured } from "@/lib/ai/client";
 import { getProblemScenarios } from "@/features/scenarios/repository";
 import { SimulationWorkbench } from "@/features/simulation/simulation-workbench";
+import { getProblemSolutions } from "@/features/solutions/repository";
+import { SolutionDesigner } from "@/features/solutions/components/solution-designer";
+import { Briefcase } from "lucide-react";
 
 function locationLabel(
   context: Awaited<ReturnType<typeof getOwnedProblem>>["problem"] extends infer T
@@ -44,9 +47,10 @@ export default async function ProblemDetailPage({
   if (!problem && !error) notFound();
   if (error || !problem) throw new Error("Unable to load this problem.");
 
-  const [{ analysis }, { scenarios }] = await Promise.all([
+  const [{ analysis }, { scenarios }, { solutions }] = await Promise.all([
     getProblemAnalysis(problemId),
     getProblemScenarios(problemId),
+    getProblemSolutions(problemId),
   ]);
 
   const location = locationLabel(problem.location_context);
@@ -129,6 +133,10 @@ export default async function ProblemDetailPage({
         <a href="#simulation-workbench" className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 hover:bg-slate-100 transition-colors">
           <Sliders size={14} className="text-[#123b5d]" /> Simulation & Scenarios Workbench
         </a>
+        <span className="text-slate-300">•</span>
+        <a href="#solutions-section" className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 hover:bg-slate-100 transition-colors">
+          <Briefcase size={14} className="text-[#123b5d]" /> Interventions & Solutions
+        </a>
       </nav>
 
       {/* SECTION 1: AI Problem Analyzer */}
@@ -206,6 +214,15 @@ export default async function ProblemDetailPage({
           problemDescription={problem.description}
           problemLocation={location ?? undefined}
           initialScenarios={scenarios}
+        />
+      </section>
+
+      {/* SECTION 3: Solution Designer & Intervention Action Plans */}
+      <section id="solutions-section" aria-label="Interventions & Solution Designer" className="space-y-6 pt-4">
+        <SolutionDesigner
+          problem={problem}
+          scenarios={scenarios}
+          initialSolutions={solutions}
         />
       </section>
     </div>
