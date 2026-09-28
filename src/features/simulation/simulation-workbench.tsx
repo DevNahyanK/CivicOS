@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   BarChart3,
   BookmarkCheck,
+  BrainCircuit,
   CheckCircle2,
   Gauge,
   Layers,
@@ -26,13 +27,17 @@ import { saveScenarioAction, setBaselineScenarioAction } from "@/features/scenar
 import { ScenarioComparison, type ScenarioItem } from "./scenario-comparison";
 import { VisualAnalytics } from "./components/visual-analytics";
 import { BottleneckDeepDive } from "./components/bottleneck-deep-dive";
+import { StrategicBriefing } from "./components/strategic-briefing";
 
 interface SimulationWorkbenchProps {
   problemId: string;
+  problemTitle?: string;
+  problemDescription?: string;
+  problemLocation?: string;
   initialScenarios?: Scenario[];
 }
 
-type WorkbenchTab = "workbench" | "analytics" | "bottlenecks" | "comparison";
+type WorkbenchTab = "workbench" | "analytics" | "bottlenecks" | "comparison" | "briefing";
 
 function parseScenarioToItem(scenario: Scenario): ScenarioItem {
   const rawInputs = (typeof scenario.inputs === "object" && scenario.inputs !== null && !Array.isArray(scenario.inputs)
@@ -64,6 +69,7 @@ function getDefaultInputs(): SimulationInputValues {
 
 export function SimulationWorkbench({
   problemId,
+  problemTitle,
   initialScenarios = [],
 }: SimulationWorkbenchProps) {
   const [inputs, setInputs] = useState<SimulationInputValues>(getDefaultInputs);
@@ -72,6 +78,11 @@ export function SimulationWorkbench({
     initialScenarios.map(parseScenarioToItem)
   );
   const [activeTab, setActiveTab] = useState<WorkbenchTab>("workbench");
+
+  const baselineItem = useMemo(
+    () => savedScenarios.find((s) => s.isBaseline) ?? savedScenarios[0] ?? null,
+    [savedScenarios]
+  );
 
   // Dialog / Save State
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -331,6 +342,21 @@ export function SimulationWorkbench({
               {savedScenarios.length}
             </span>
           )}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("briefing")}
+          className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-colors ${
+            activeTab === "briefing"
+              ? "bg-[#123b5d] text-white shadow-xs"
+              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+          }`}
+        >
+          <BrainCircuit size={14} /> AI Strategic Briefing
+          <span className="rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-bold text-indigo-800">
+            Gemini
+          </span>
         </button>
       </div>
 
@@ -742,6 +768,19 @@ export function SimulationWorkbench({
             scenarios={savedScenarios}
             currentLiveResult={currentResult}
             onSelectScenario={handleLoadScenario}
+          />
+        </section>
+      )}
+
+      {/* TAB 5: AI STRATEGIC BRIEFING & POLICY SYNTHESIS */}
+      {activeTab === "briefing" && (
+        <section aria-label="AI Strategic Briefing">
+          <StrategicBriefing
+            problemId={problemId}
+            problemTitle={problemTitle}
+            currentInputs={inputs}
+            currentResult={currentResult}
+            baselineItem={baselineItem}
           />
         </section>
       )}

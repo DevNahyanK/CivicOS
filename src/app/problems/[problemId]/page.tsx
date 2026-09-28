@@ -196,11 +196,17 @@ export default async function ProblemDetailPage({
             </p>
           </div>
           <span className="rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 border border-emerald-200">
-            Phase 5 Live
+            Phase 7 Live
           </span>
         </div>
 
-        <SimulationWorkbench problemId={problem.id} initialScenarios={scenarios} />
+        <SimulationWorkbench
+          problemId={problem.id}
+          problemTitle={problem.title}
+          problemDescription={problem.description}
+          problemLocation={location ?? undefined}
+          initialScenarios={scenarios}
+        />
       </section>
     </div>
   );
